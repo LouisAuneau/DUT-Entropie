@@ -89,7 +89,6 @@ button{
 }
 
 table td{
-    border: 1px solid black;
     width: 50px;
     height: 50px;
 }
@@ -101,9 +100,19 @@ table{
 }
 
 .pion{
-    height: 40px;
-    width: 40px;
-    border-radius: 20px;
+    height: 25px;
+    width: 25px;
+    border-radius: 12.5px;
     vertical-align: middle;
     margin: auto;
+}
+
+.pion:hover{
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+}
+
+.pair{
+    background-color: #EBEBEB;
 }

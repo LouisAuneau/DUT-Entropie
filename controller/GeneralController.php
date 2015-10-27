@@ -15,7 +15,6 @@ class GeneralController {
     public static function run(){
         // Si une partie n'est pas lancée
         if(!isset($_SESSION["partie"])) {
-            echo "test";
             // Traitement si les informations ont étées remplies pour débuter la partie.
             if(isset($_GET["joueur1"]) && isset($_GET["joueur2"]) && isset($_GET["couleurJoueur1"]) && isset($_GET["couleurJoueur2"])){
                 self::lancerPartie($_GET["joueur1"], $_GET["couleurJoueur1"], $_GET["joueur2"], $_GET["couleurJoueur2"]);
@@ -25,16 +24,23 @@ class GeneralController {
             self::affichage("CreerPartie");
         }
 
-        // Si une partie est déjà lancée (on refait un if, au cas ou une partie vient d'être créée)
-        if(isset($_SESSION["partie"])){
-            $donnees["partie"] = unserialize($_SESSION["partie"]);
+        // Si une partie est déjà lancée
+        else{
+            $partie = unserialize($_SESSION["partie"]);
+            $donnees["plateau"] = $partie->toHtml();
+            $donnees["joueurCourant"] = $partie->getJoueurCourant()->getPrenom();
+
             self::affichage("Plateau", $donnees);
         }
     }
 
 
     private static function affichage($view, $donnees = null){
-        extract($donnees);
+        // Si on a des données, on les extraits pour les afficher dans la vue.
+        if(!is_null($donnees))
+            extract($donnees);
+
+        // Si le fhichier de la vue spécifié existe, on l'affiche avec les données extraites auparavant.
         if(file_exists("./views/".$view."View.php")){
             ob_start();
             require_once "./views/".$view."View.php";
@@ -49,8 +55,9 @@ class GeneralController {
             $j1 = new Joueur($j1, $couleurJ1);
             $j2 = new Joueur($j2, $couleurJ2);
             $_SESSION["partie"] = serialize(new Partie($j1, $j2)); // On créer la partie
+            header('Location: index.php'); // On recharge pour lancer la partie.
         } else{
-            header('Location: index.php'); // Si erreur on recharge le formulaire
+            header('Location: index.php'); // Si erreur on recharge le formulaire.
         }
     }
 }

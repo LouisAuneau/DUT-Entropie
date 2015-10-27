@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="public/styles.css"/>
 </head>
 <body>
-<h1>Entropie</h1>
-    <?php echo $partie->toHtml(); ?>
+    <h1>Entropie</h1>
+    <?php echo $plateau; ?>
+    <p><?php echo $joueurCourant; ?>, c'est votre tour.</p>
 </body>
 </html>
