@@ -6,13 +6,7 @@ use model\Joueur;
 use model\Partie;
 
 class GeneralController {
-    private $partie;
-
-    /**
-     * Cette fonction statique va se lancer à chaque chargement de page et effectuer tous les traitements nécessaires.
-     * C'est le point d'entrée de l'application.
-     */
-    public static function run(){
+    public static function demarrer(){
         // Si une partie n'est pas lancée
         if(!isset($_SESSION["partie"])) {
             // Traitement si les informations ont étées remplies pour débuter la partie.

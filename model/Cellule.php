@@ -3,35 +3,61 @@ namespace model;
 
 
 class Cellule {
-    /**
-     * @var Joueur Joueur à qui appartient la case. Si la case n'appartient à aucun joueur, sa valeur est null.
-     */
     private $joueur;
-    /**
-     * @var boolean Booléen qui dit si oui ou non le joueur pourra cliquer sur cette case pour le tour en question. cette valeur est décidée par la classe Partie.
-     */
-    private $jouable;
+    private $x;
+    private $y;
 
-    /**
-     * @param Joueur $joueur
-     * @param boolean $jouable
-     */
-    public function __construct($joueur = null, $jouable = false){
-        $this->joueur = $joueur;
+    public function __construct($x, $y){
+        $this->x = $x;
+        $this->y = $y;
     }
 
-    public function getJoueur(){ return $this->joueur; }
-    public function setJoueur($joueur){ $this->joueur = $joueur; }
+    public function getX(){
+        return $this->x;
+    }
 
-    public function toHtml(){
-        if(!is_null($this->joueur)) {
-            $str = "<div class=\"pion";
-            if($this->jouable)
-                $str.= " active";
-            $str .= "\" style=\"background-color : " . $this->joueur->getCouleur() . "\"></div>";
-            return $str;
+    public function getY(){
+        return $this->y;
+    }
+
+    public function getJoueur(){
+        return $this->joueur;
+    }
+
+    public function getCelluleSuivante($direction){
+        if(isset($_SESSION["partie"])){
+            $plateau = unserialize($_SESSION["partie"])->getPlateau();
+            switch ($direction){
+                case "no":
+                    return $plateau->getCellule($this->x - 1, $this->y - 1);
+                    break;
+                case "n" :
+                    return $plateau->getCellule($this->x, $this->y - 1);
+                    break;
+                case "ne" :
+                    return $plateau->getCellule($this->x + 1, $this->y - 1);
+                    break;
+                case "e" :
+                    return $plateau->getCellule($this->x + 1, $this->y);
+                    break;
+                case "se" :
+                    return $plateau->getCellule($this->x + 1, $this->y + 1);
+                    break;
+                case "s" :
+                    return $plateau->getCellule($this->x, $this->y + 1);
+                    break;
+                case "so" :
+                    return $plateau->getCellule($this->x - 1, $this->y + 1);
+                    break;
+                case "o" :
+                    return $plateau->getCellule($this->x - 1, $this->y);
+                    break;
+                default:
+                    return null;
+                    break;
+            }
+        } else{
+            return null;
         }
-        else
-            return " ";
     }
 }
