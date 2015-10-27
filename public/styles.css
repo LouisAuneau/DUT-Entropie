@@ -1,3 +1,93 @@
+
+/* FONTS */
+@font-face {
+    font-family: 'Proxima Nova';
+    src: url('fonts/primitvenova-webfont.eot');
+    src: url('fonts/primitvenova-webfont.eot?#iefix') format('embedded-opentype'),
+    url('fonts/primitvenova-webfont.woff2') format('woff2'),
+    url('fonts/primitvenova-webfont.woff') format('woff'),
+    url('fonts/primitvenova-webfont.ttf') format('truetype'),
+    url('fonts/primitvenova-webfont.svg#proxima_novaregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* STYLES GÉNÉRAUX */
+html, body {
+    height: 100%;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+    font-family: 'Proxima Nova';
+    text-align: center;
+    color: #2e2e2e;
+}
+
+h1{
+    margin: auto;
+    font-size: 30px;
+    text-transform: uppercase;
+}
+
+/* LANCEMENT DE LA PARTIE */
+form{
+    position: relative;
+    top: 30px;
+    margin: auto;
+    width: 500px;
+    text-align: left;
+    background-color: #EBEBEB;
+    padding: 50px;
+}
+
+label{
+    font-size: 14px;
+    display: block;
+    margin-bottom: 3px;
+}
+
+input[type="text"]{
+    border: 3px solid #C9C9C9;
+    height: 25px;
+    margin-bottom: 20px;
+    vertical-align: middle;
+}
+
+input[type="color"]{
+    border: none;
+    border: 3px solid #C9C9C9;
+    height: 27px;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    position: relative;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper{
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch{
+    border: none;
+}
+
+button{
+    display: block;
+    height: 30px;
+    text-align: center;
+    border: none;
+    background-color: #C9C9C9;
+    width: 150px;
+    font-family: "Proxima Nova";
+}
+
 table td{
     border: 1px solid black;
     width: 50px;
@@ -6,5 +96,14 @@ table td{
 
 table{
     border-collapse: collapse;
+    margin: auto;
+    margin-top: 30px;
+}
+
+.pion{
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    vertical-align: middle;
     margin: auto;
 }

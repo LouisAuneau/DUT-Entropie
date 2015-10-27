@@ -13,7 +13,7 @@ class Cellule {
     public function setJoueur($joueur){ $this->joueur = $joueur; }
     public function toHtml(){
         if(!is_null($this->joueur))
-            return $this->joueur->getPrenom();
+            return "<div class=\"pion\" style=\"background-color : " . $this->joueur->getCouleur() . "\"></div>";
         else
             return " ";
     }
