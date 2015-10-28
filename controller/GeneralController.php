@@ -79,6 +79,17 @@ class GeneralController {
                 $partie->sauvegarder();
             }
         }
+
+        // Dans le cas où on est à l'étape 2
+        if($etape == 2){
+            if(in_array($partie->getPlateau()->getCellule($x, $y), $partie->getCelluleADeplacer()->getCellulesSuivantesDisponibles())){
+                $partie->getCelluleADeplacer()->setJoueur(null);
+                $partie->getPlateau()->getCellule($x, $y)->setJoueur($partie->getJoueurCourant());
+                $partie->changerJoueurCourant();
+                $partie->setEtape(1);
+                $partie->sauvegarder();
+            }
+        }
     }
 
 }

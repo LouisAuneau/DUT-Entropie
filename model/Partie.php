@@ -38,11 +38,25 @@ class Partie {
         return $this->joueurCourant;
     }
 
+    public function changerJoueurCourant(){
+        if($this->joueurCourant == $this->joueur1)
+            $this->joueurCourant = $this->joueur2;
+        else
+            $this->joueurCourant = $this->joueur1;
+    }
+
     public function setCelluleADeplacer($cellule){
         $this->celluleADeplacer = $cellule;
     }
 
     public function getCelluleADeplacer(){
         return $this->celluleADeplacer;
+    }
+
+    public function gagne(){
+        $joueur1Gagne = true;
+        foreach($this->getPlateau()->getCellules() as $cellule){
+
+        }
     }
 }
