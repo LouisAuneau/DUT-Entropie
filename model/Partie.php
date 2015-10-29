@@ -23,7 +23,10 @@ class Partie {
     }
 
     public static function charger(){
-        return unserialize($_SESSION["partie"]);
+        if(isset($_SESSION["partie"]))
+            return unserialize($_SESSION["partie"]);
+        else
+            return null;
     }
 
     public function sauvegarder(){

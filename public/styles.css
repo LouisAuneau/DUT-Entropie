@@ -17,6 +17,10 @@ html, body {
     height: 100%;
 }
 
+a{
+    text-decoration: none;
+}
+
 html {
     display: table;
     margin: auto;
@@ -41,7 +45,7 @@ form{
     position: relative;
     top: 30px;
     margin: auto;
-    width: 500px;
+    width: 350px;
     text-align: left;
     background-color: #EBEBEB;
     padding: 50px;
@@ -54,6 +58,7 @@ label{
 }
 
 input[type="text"]{
+    width: 80%;
     border: 3px solid #C9C9C9;
     height: 25px;
     margin-bottom: 20px;
@@ -61,6 +66,7 @@ input[type="text"]{
 }
 
 input[type="color"]{
+    width: 15%;
     border: none;
     border: 3px solid #C9C9C9;
     height: 27px;
@@ -81,13 +87,18 @@ input[type="color"]::-webkit-color-swatch{
 button{
     display: block;
     height: 30px;
+    width: 100%;
     text-align: center;
     border: none;
     background-color: #C9C9C9;
-    width: 150px;
     font-family: "Proxima Nova";
 }
 
+button:hover{
+    cursor: pointer;
+}
+
+/* PLATEAU */
 table td{
     width: 50px;
     height: 50px;
@@ -126,4 +137,22 @@ a.pion:hover{
 
 .pair{
     background-color: #EBEBEB;
+}
+
+/* PAGE DE VICTOIRE */
+.pion-geant h1{
+    position: relative;
+    top: 85px;
+    color: #fff;
+}
+
+.pion-geant{
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+    margin: auto;
+}
+
+.bravo{
+    margin-top: 50px;
 }

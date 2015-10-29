@@ -6,8 +6,11 @@
     <link rel="stylesheet" href="public/styles.css"/>
 </head>
 <body>
-<h1>Entropie</h1>
-    <div class="pion-geant" style="background-color: <?php echo $couleur; ?>"></div>
-    <p>Bravo <?php echo $gagnant; ?>, vous avez gagné !</p>
+    <a href="index.php">
+        <div class="pion-geant" style="background-color: <?php echo $couleur; ?>">
+            <h1>Entropie</h1>
+        </div>
+    </a>
+    <p class="bravo">Bravo <strong><?php echo $gagnant; ?></strong>, vous avez gagné !</p>
 </body>
 </html>
