@@ -106,15 +106,9 @@ class Cellule {
         if($this->joueur == null)
             return false;
 
-        // Si la case appartient au joueur adverse, on ne peut la déplacer.
-        if($this->joueur != $partie->getJoueurCourant())
-            return false;
-
         // Si on a aucune case disponible pour déplacer le pion, on ne le déplace pas
-        if(empty($this->getCellulesSuivantesDisponibles())){
+        if(empty($this->getCellulesSuivantesDisponibles()))
             return false;
-        }
-
 
         // On vérifie que le pion a au moins un poin voisin du même joueur pour pouvoir être déplacé.
         for($x = -1; $x <= 1; $x++){
@@ -144,7 +138,7 @@ class Cellule {
 
         // Si il y a un joueur sur la case
         else{
-            if($etape == 1 && $this->deplacable())
+            if($etape == 1 && $this->deplacable() && $partie->getJoueurCourant() == $this->joueur)
                 return "<a class='pion' href='?etape=".$etape."&x=".$this->x."&y=".$this->y."' style='background-color:".$this->joueur->getCouleur()."'></a>";
             else if($etape == 2 && $this == $partie->getCelluleADeplacer())
                 return "<div class='pion deplacement' style='background-color:".$this->joueur->getCouleur()."'></a>";

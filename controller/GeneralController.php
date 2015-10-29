@@ -13,6 +13,19 @@ class GeneralController {
             if (isset($_GET["etape"]) && isset($_GET["x"]) && isset($_GET["y"]))
                 self::avancerPartie($_GET["etape"], $_GET["x"], $_GET["y"]);
 
+            // Si la partie est gagnee, on vérifie que c'est vrai et on affiche la bonne vue et on arrête l'application, sinon on ne fait rien.
+            if(isset($_GET["gagnee"])){
+                $partie = unserialize($_SESSION["partie"]);
+                if($partie->gagnee() != false){
+                    $donnees["gagnant"] = $partie->gagnee()->getPrenom();
+                    $donnees["couleur"] = $partie->gagnee()->getCouleur();
+                    self::affichage("Gagne", $donnees);
+                    $partie->quitter();
+                    return false;
+                }
+
+            }
+
             // On récupère les données dans le modèle et on les stock pour les afficher
             $partie = unserialize($_SESSION["partie"]);
             $donnees["plateau"] = $partie->getPlateau()->toHtml();
@@ -70,6 +83,10 @@ class GeneralController {
 
         if ($partie->getPlateau()->getCellule($x, $y) == null) // La cellule à déplacer n'est pas dans le plateau
             return false;
+
+        // Si la partie est gagnée, on charge la vue gagnée
+        if($partie->gagnee() != false)
+            header('Location:index.php?gagnee=true');
 
         // Dans le cas ou on a fait l'étape 1 :
         if ($etape == 1) {

@@ -22,8 +22,16 @@ class Partie {
         return $this->plateau;
     }
 
+    public static function charger(){
+        return unserialize($_SESSION["partie"]);
+    }
+
     public function sauvegarder(){
         $_SESSION["partie"] = serialize($this);
+    }
+
+    public function quitter(){
+        unset($_SESSION["partie"]);
     }
 
     public function getEtape(){
@@ -53,10 +61,25 @@ class Partie {
         return $this->celluleADeplacer;
     }
 
-    public function gagne(){
+    public function gagnee(){
         $joueur1Gagne = true;
-        foreach($this->getPlateau()->getCellules() as $cellule){
+        $joueur2Gagne = true;
 
+        for($x = 0; $x < 5; $x++){
+            for($y = 0; $y < 5; $y++) {
+                $cellule = $this->getPlateau()->getCellule($x, $y);
+                if ($cellule->getJoueur() == $this->joueur1 && $cellule->deplacable())
+                    $joueur1Gagne = false;
+                if ($cellule->getJoueur() == $this->joueur2 && $cellule->deplacable())
+                    $joueur2Gagne = false;
+            }
         }
+
+        if($joueur1Gagne)
+            return $this->joueur1;
+        else if($joueur2Gagne)
+            return $this->joueur2;
+        else
+            return false;
     }
 }
