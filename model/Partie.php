@@ -9,6 +9,7 @@ class Partie {
     private $etape;
     private $plateau;
     private $celluleADeplacer;
+    private $etatPrecedant;
 
     public function __construct($joueur1, $joueur2) {
         $this->joueur1 = $joueur1;
@@ -16,6 +17,7 @@ class Partie {
         $this->joueurCourant = $joueur1; // Le joueur 1 commence à joueur.
         $this->etape = 1; // On commence par l'étape 1 : le choix d'un pion a déplacer.
         $this->plateau = new Plateau($joueur1, $joueur2);
+        $this->etatPrecedant = serialize($this);
     }
 
     public function getPlateau() {
@@ -27,6 +29,14 @@ class Partie {
             return unserialize($_SESSION["partie"]);
         else
             return null;
+    }
+
+    public function setEtatPrecedant(){
+        $this->etatPrecedant = serialize($this);
+    }
+
+    public function retour(){
+        return unserialize($this->etatPrecedant);
     }
 
     public function sauvegarder(){
