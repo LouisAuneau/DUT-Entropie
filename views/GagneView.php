@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <title>Entropie - Projet "Programmation Web Serveur</title>
     <link rel="stylesheet" href="public/styles.css"/>
+    <link rel="icon" href="public/img/favicon.png"/>
 </head>
 <body>
     <a href="index.php">
