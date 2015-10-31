@@ -14,5 +14,10 @@
         <a href="index.php?quitter=1" title="Quitter la partie"><img src="public/img/icone_quitter.png" alt="Quitter la partie" style="height: 12px"/></a>
         <a href="index.php?retour=1" title="Retour en arrière"><img src="public/img/icone_retour.png" alt="Retour en arrière"/></a>
     </div>
+    <?php if(isset($erreur)){ ?>
+    <div id="erreur">
+        <p><?php echo $erreur; ?></p>
+    </div>
+    <?php } ?>
 </body>
 </html>

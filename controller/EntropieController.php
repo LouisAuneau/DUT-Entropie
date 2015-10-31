@@ -131,6 +131,16 @@ class EntropieController {
                 }
             }
 
+            // Si un message d'erreur est demandé, on l'affiche
+            if(isset($_GET["message"])) {
+                if ($_GET["message"] == "isole")
+                    $donnees["erreur"] = "Ce pion est isolé, vous devez rompre son isolement pour le déplacer.";
+                else if ($_GET["message"] == "isolement")
+                    $donnees["erreur"] = "Un pion est isolé, or ce pion ne peut pas rompre l'isolement ! Choisissez en un autre.";
+                else
+                    $donnees["erreur"] = "Ce pion ne peut pas être déplacé car il n'a pas de pion allié à côté.";
+            }
+
             // On vérifie si il y a victoire, car cela stoppera la partie et n'affichera pas la grille.
             self::gagnee();
 

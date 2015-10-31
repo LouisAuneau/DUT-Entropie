@@ -130,20 +130,12 @@ class Partie {
         for($x = 0; $x < 5; $x++){
             for($y = 0; $y < 5; $y++) {
                 $cellule = $this->getPlateau()->getCellule($x, $y);
-                if ($cellule->getJoueur() == $this->joueur1 && $cellule->deplacable())
+                if ($cellule->getJoueur() == $this->joueur1 && !$cellule->gagnante())
                     $joueur1Gagne = false;
-                if ($cellule->getJoueur() == $this->joueur2 && $cellule->deplacable())
+                if ($cellule->getJoueur() == $this->joueur2 && !$cellule->gagnante())
                     $joueur2Gagne = false;
             }
         }
-
-        // On vérifie que chaque joueur n'a pas de pions isolés
-        $pionsIsolesJ1 = $this->pionsIsoles($this->joueur1);
-        if(!empty($pionsIsolesJ1))
-            $joueur1Gagne = false;
-        $pionsIsolesJ2 = $this->pionsIsoles($this->joueur2);
-        if(!empty($pionsIsolesJ2))
-            $joueur2Gagne = false;
 
         if($joueur1Gagne)
             return $this->joueur1;

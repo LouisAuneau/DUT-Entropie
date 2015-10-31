@@ -153,7 +153,7 @@ class Cellule {
         // On ajoute les cases suivantes dans chaque direction en utilisant la méthode privée.
         $directions = ["n", "ne", "e", "se", "s", "so", "o", "no"]; //Toutes les directions possibles.
         foreach($directions as $direction) {
-            $cellulesSuivantesDisponibles = array_merge($cellulesSuivantesDisponibles, $this->getCelluleSuivanteDisponible($direction, []));
+            $cellulesSuivantesDisponibles = array_merge($cellulesSuivantesDisponibles, $this->getCelluleSuivanteDisponible($direction, [], $this->joueur));
         }
 
         // On ne tient pas compte dans le cas ou la case suivante est cette propre case.
@@ -172,18 +172,57 @@ class Cellule {
      * @param array $cellulesPrecedantes La méthode étant récursive, on récupère les cellules cibles disponibles trouvées précedements pour les ajouter à celles qui suivent.
      * @return array Retourne un tableau de Cellules contenant les cellules où le déplacement est possible.
      */
-    private function getCelluleSuivanteDisponible($direction, array $cellulesPrecedantes){
+    private function getCelluleSuivanteDisponible($direction, array $cellulesPrecedantes, $joueur){
         $celluleSuivante = $this->getCelluleSuivante($direction);
         // Si le déplacement dans la direction n'est plus possible (On arrive en bord, donc on a une cellule à null, ou on arrive sur une cellule suivante appartenant à un joueur et ayant un pion).
         if(is_null($celluleSuivante) || $celluleSuivante->getJoueur() != null){
-            array_push($cellulesPrecedantes, $this); // On ajoute cette cellule aux cellules possibles et on retourne le tout.
+            // On ajoute cette cellule uniquement si elle rompt l'isolement
+            if($this->romptIsolement($joueur))
+                array_push($cellulesPrecedantes, $this); // On ajoute cette cellule aux cellules possibles et on retourne le tout.
             return $cellulesPrecedantes;
         }
         // le déplacement est encore possible sur la cellule suivante
         else {
-            array_push($cellulesPrecedantes, $this); // On ajoute cette cellule aux cellules possibles.
-            return $celluleSuivante->getCelluleSuivanteDisponible($direction, $cellulesPrecedantes); // On continu récursivement sur la cellule suivante.
+            // On ajoute cette cellule uniquement si elle rompt l'isolement
+            if($this->romptIsolement($joueur))
+                array_push($cellulesPrecedantes, $this); // On ajoute cette cellule aux cellules possibles et on retourne le tout.
+            return $celluleSuivante->getCelluleSuivanteDisponible($direction, $cellulesPrecedantes, $joueur); // On continu récursivement sur la cellule suivante.
         }
+    }
+
+    private function romptIsolement(Joueur $joueur){
+        if(is_null($this->joueur)){
+            $pionsIsoles = Partie::charger()->pionsIsoles($joueur);
+            if(!empty($pionsIsoles)){
+                foreach($pionsIsoles as $pionIsole){
+                    if(in_array($this, $pionIsole->cellulesVoisines()))
+                        return true;
+                }
+                return false;
+            } else
+                return true;
+        } else{
+            return false;
+        }
+    }
+
+
+    public function gagnante(){
+        if(!is_null($this->joueur)) {
+            $aPionVoisinAdverse = false;
+            $aPionVoisinAllie = false;
+
+            foreach ($this->cellulesVoisines() as $celluleVoisine){
+                $joueurPionVoisin = $celluleVoisine->getJoueur();
+                if($joueurPionVoisin != null && $joueurPionVoisin != $this->joueur)
+                    $aPionVoisinAdverse = true;
+                if($joueurPionVoisin != null && $joueurPionVoisin == $this->joueur)
+                    $aPionVoisinAllie = true;
+            }
+
+            return $aPionVoisinAdverse && !$aPionVoisinAllie;
+        } else
+            return false;
     }
 
 
@@ -199,25 +238,9 @@ class Cellule {
             return false;
 
         // Si on a aucune case disponible pour déplacer le pion, on ne le déplace pas
-        if(empty($this->getCellulesSuivantesDisponibles()))
+        $cellulesSuivantesDisponibles = $this->getCellulesSuivantesDisponibles();
+        if(empty($cellulesSuivantesDisponibles))
             return false;
-
-        // On vérifie que si il y a des pions isolés, ce pion peut rompre l'isolement
-//        $peutRompreIsolement = false;
-//        $pionsIsoles = $partie->pionsIsoles($this->joueur);
-//        if(!empty($pionsIsoles)){ // Si on a au moins un pion isolé
-//            foreach($pionsIsoles as $pionIsole){
-//                if(in_array($pionIsole, $this->getCellulesSuivantesDisponibles())){
-//                    $peutRompreIsolement = true;
-//                }
-//            }
-//        } else{ // Si il n'y a pas de pion isolé, on met vrai car tout est ok.
-//            $peutRompreIsolement = true;
-//        }
-//
-//        // Si le pion ne peut pas rompre un isolement, il n'est pas déplacable.
-//        if(!$peutRompreIsolement)
-//            return false;
 
         // On vérifie que le pion a au moins un poin voisin du même joueur pour pouvoir être déplacé.
         for($x = -1; $x <= 1; $x++){
@@ -251,9 +274,23 @@ class Cellule {
 
         // Si il y a un pion sur la cellule.
         else{
-            // Si on est à l'étape 1 et que le pion est déplacable et qu'il appartient au joueur à qui s'est le tour, le pion est cliquable, et on fait un lien avec les informations nécessaires (étape, x, y).
-            if($etape == 1 && $this->deplacable() && $partie->getJoueurCourant() == $this->joueur)
-                return "<a class='pion' href='?etape=".$etape."&x=".$this->x."&y=".$this->y."' style='background-color:".$this->joueur->getCouleur()."'></a>";
+            // Etape 1
+            if($etape == 1) {
+                $deplacable = $this->deplacable();
+                // Si on est à l'étape 1 et que le pion est déplacable et qu'il appartient au joueur à qui s'est le tour, le pion est cliquable, et on fait un lien avec les informations nécessaires (étape, x, y).
+                if ($etape == 1 && $deplacable && $partie->getJoueurCourant() == $this->joueur)
+                    return "<a class='pion' href='?etape=" . $etape . "&x=" . $this->x . "&y=" . $this->y . "' style='background-color:" . $this->joueur->getCouleur() . "'></a>"; // Si on est à l'étape 1 et que le pion n'est pas déplacable, on affiche un message
+                else if ($etape == 1 && !$deplacable && $partie->getJoueurCourant() == $this->joueur) {
+                    if ($this->isolee())
+                        return "<a class='pion' href='?message=isole' style='background-color:" . $this->joueur->getCouleur() . "'></a>";
+                    else if($this->gagnante())
+                        return "<a class='pion' href='?message=pasVoisin' style='background-color:" . $this->joueur->getCouleur() . "'></a>";
+                    else
+                        return "<a class='pion' href='?message=isolement' style='background-color:" . $this->joueur->getCouleur() . "'></a>";
+                } else{
+                    return "<div class='pion' style='background-color:".$this->joueur->getCouleur()."'></div>";
+                }
+            }
             // Si on est à l'étape 2, et que la cellule en question est la cellule choisie pour être déplacée à l'étape précedente, on l'affiche en plus grosse (avec la class déplacement en css).
             else if($etape == 2 && $this == $partie->getCelluleADeplacer())
                 return "<div class='pion deplacement' style='background-color:".$this->joueur->getCouleur()."'></a>";

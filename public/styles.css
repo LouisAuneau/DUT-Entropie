@@ -149,6 +149,24 @@ a.pion:hover{
     overflow: hidden;
 }
 
+#erreur{
+    width: 260px;
+    text-align: left;
+    overflow: hidden;
+    background-color: #EBEBEB;
+}
+
+#erreur p{
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    line-height: 18px;
+}
+
 #commandes p, #commandes a{
     display: inline-block;
 }
