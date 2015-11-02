@@ -131,7 +131,7 @@ class EntropieController {
                 }
             }
 
-            // Si un message d'erreur est demandé, on l'affiche
+            // Si un message d'erreur est demandé, on l'affiche.
             if(isset($_GET["message"])) {
                 if ($_GET["message"] == "isole")
                     $donnees["erreur"] = "Ce pion est isolé, vous devez rompre son isolement pour le déplacer.";

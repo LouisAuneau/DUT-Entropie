@@ -110,20 +110,16 @@ class Cellule {
 
     /**
      * Détermine si une cellule est isolée, c'est à dire qu'elle n'a aucun pion voisin.
-     * @return bool Vrai si elle est isolée
+     * @return bool Vrai si elle est isolée, faux sinon.
      */
     public function isolee(){
         $cellulesVoisines = $this->cellulesVoisines();
-        if(empty($cellulesVoisines)) // Au cas où le tableau est vide
-            return false;
-        else{
-            foreach($cellulesVoisines as $celluleVoisine){
-                if($celluleVoisine->getJoueur() != null){ // Si le voisin n'est pas null (cellule vide) et n'a pas le même joueur (donc adverse), on a au moins un pion adverse.
-                    return false;
-                }
+        foreach($cellulesVoisines as $celluleVoisine){
+            if($celluleVoisine->getJoueur() != null){ // Si le voisin n'est pas null (cellule vide) et n'a pas le même joueur (donc adverse), on a au moins un pion adverse, donc la cellule n'est pas isolée.
+                return false;
             }
-            return true;
         }
+        return true;
     }
 
 
@@ -190,10 +186,16 @@ class Cellule {
         }
     }
 
+
+    /**
+     * Permet de savoir si cette cellule est parmi les cellules voisines d'un pion isolé, et permet donc de rompre l'isolement.
+     * @param Joueur $joueur Joueur à qui appartiennent les pions isolés.
+     * @return bool Vrai si la cellule peut rompre l'isolement, faux sinon.
+     */
     private function romptIsolement(Joueur $joueur){
-        if(is_null($this->joueur)){
-            $pionsIsoles = Partie::charger()->pionsIsoles($joueur);
-            if(!empty($pionsIsoles)){
+        if(is_null($this->joueur)){ // Si la case est vide
+            $pionsIsoles = Partie::charger()->pionsIsoles($joueur); // On récupère les pions isolés du joueur.
+            if(!empty($pionsIsoles)){ // Si il y'a au moins un pion isolé, on regarde si la cellule fait partie de ses voisins. Sinon elle ne rompt pas d'isolement.
                 foreach($pionsIsoles as $pionIsole){
                     if(in_array($this, $pionIsole->cellulesVoisines()))
                         return true;
@@ -207,12 +209,16 @@ class Cellule {
     }
 
 
+    /**
+     * Permet de savoir si la cellule est gagnante, c'est à dire qu'elle a au moins un voisin adverse et aucun voisin allié.
+     * @return bool Vrai si la case est gagnante, faux sinon.
+     */
     public function gagnante(){
-        if(!is_null($this->joueur)) {
+        if(!is_null($this->joueur)) { // La case ne peut être gagnante que si il y a un joueur dessus.
             $aPionVoisinAdverse = false;
             $aPionVoisinAllie = false;
 
-            foreach ($this->cellulesVoisines() as $celluleVoisine){
+            foreach ($this->cellulesVoisines() as $celluleVoisine){ // On parcours les cellules voisines.
                 $joueurPionVoisin = $celluleVoisine->getJoueur();
                 if($joueurPionVoisin != null && $joueurPionVoisin != $this->joueur)
                     $aPionVoisinAdverse = true;
@@ -220,7 +226,7 @@ class Cellule {
                     $aPionVoisinAllie = true;
             }
 
-            return $aPionVoisinAdverse && !$aPionVoisinAllie;
+            return $aPionVoisinAdverse && !$aPionVoisinAllie; // Pour gagner il faut au moins un pion adverse et aucun pion allié dans les voisins.
         } else
             return false;
     }
@@ -256,6 +262,7 @@ class Cellule {
 
 
     /**
+     * Converti la cellule pour l'affichage HTML, selon l'étape et la position de la case dans le plateau.
      * @return string Retourne la cellule en HTML pour pouvoir l'afficher. Selon l'état de la cellule (déplacable ou non, étape 1 ou 2...), on n'utilisera pas la même balise.
      */
     public function toHtml(){

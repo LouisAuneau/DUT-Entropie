@@ -78,36 +78,68 @@ class Partie {
 
 
     /**
-     * Mutateur de l'état précedant de la partie.
+     * Mutateur donnant l'état précedant de la partie.
      */
     public function setEtatPrecedant(){
         $this->etatPrecedant = serialize($this);
     }
 
+
+    /**
+     * Permet de faire un retour en arrière dans la partie. La réassignation interne à la classe étant interdire, on retourn l'état précèdant qui devra être sauvegarder.
+     * @return Partie Même partie mais à l'état précedant.
+     */
     public function retour(){
         return unserialize($this->etatPrecedant);
     }
 
+
+    /**
+     * Permet de sauvegarder la partie à tout instant dans la session pour la recharger plus tard. L'utilisation de la sérialisation (voir serialize() dans la doc PHP) permet de tout conserver sans aucune perte.
+     */
     public function sauvegarder(){
         $_SESSION["partie"] = serialize($this);
     }
 
+
+    /**
+     * Permet de quitter la partie à tout moment en supprimant la sauvegarde faite dans les sessions.
+     */
     public function quitter(){
         unset($_SESSION["partie"]);
     }
 
+
+    /**
+     * Accesseur permettant de récupérer l'étape courante de la partie.
+     * @return int 1 si le joueur choisi un pion à déplacer. 2 si il choisi l'endroit où le déplacer.
+     */
     public function getEtape(){
         return $this->etape;
     }
 
+
+    /**
+     * Mutateur de l'étape de la partie.
+     * @param int $etape 1 si le joueur va choisir un pion à déplcer, 2 si il va choisir où le déplacer.
+     */
     public function setEtape($etape){
         $this->etape = $etape;
     }
 
+
+    /**
+     * Accesseur pour récupérer le joueur en train de jouer.
+     * @return Joueur Joueur en train de jouer.
+     */
     public function getJoueurCourant(){
         return $this->joueurCourant;
     }
 
+
+    /**
+     * Permet de changer le joueur courant, entre deux tours notamment. Si le joueur 1 jouait, on passe au 2 et vice-versa.
+     */
     public function changerJoueurCourant(){
         if($this->joueurCourant == $this->joueur1)
             $this->joueurCourant = $this->joueur2;
@@ -115,21 +147,38 @@ class Partie {
             $this->joueurCourant = $this->joueur1;
     }
 
-    public function setCelluleADeplacer($cellule){
+
+    /**
+     * Mutateur pour désigner une cellule qui sera déplacée à l'étape 2.
+     * @param Cellule $cellule Cellule à déplacer.
+     */
+    public function setCelluleADeplacer(Cellule $cellule){
         $this->celluleADeplacer = $cellule;
     }
 
+
+    /**
+     * Accesseur pour récupérer la cellule qui sera déplacée lors de l'étape 2.
+     * @return Cellule Cellule qui va être déplacée.
+     */
     public function getCelluleADeplacer(){
         return $this->celluleADeplacer;
     }
 
+
+    /**
+     * Permet de savoir si la partie est gagnée ou non et par qui.
+     * @return bool|Joueur Faux si la partie n'est pas gagnée, le joueur gagnant sinon.
+     */
     public function gagnee(){
         $joueur1Gagne = true;
         $joueur2Gagne = true;
 
+        // On parcours les cellules du plateau.
         for($x = 0; $x < 5; $x++){
             for($y = 0; $y < 5; $y++) {
                 $cellule = $this->getPlateau()->getCellule($x, $y);
+                // Si une cellule d'un des deux joueur n'est pas gagnante, il n'est pas gagnant.
                 if ($cellule->getJoueur() == $this->joueur1 && !$cellule->gagnante())
                     $joueur1Gagne = false;
                 if ($cellule->getJoueur() == $this->joueur2 && !$cellule->gagnante())
@@ -137,13 +186,16 @@ class Partie {
             }
         }
 
-        if($joueur1Gagne)
+        if($joueur1Gagne && $joueur2Gagne) // Si il y a égalité, c'est le joueur courant qui gagne car il vient de faire le déplacement.
+            return $this->joueurCourant;
+        else if($joueur1Gagne)
             return $this->joueur1;
         else if($joueur2Gagne)
             return $this->joueur2;
         else
             return false;
     }
+
 
     /**
      * Pour récupérer la liste des pions isolés d'un joueur. Un pion isolé est un pion n'ayant aucun pion accolé à lui.
